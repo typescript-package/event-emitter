@@ -1,0 +1,1 @@
+export type { ListenersFor } from './listeners-for.type';
