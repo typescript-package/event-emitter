@@ -9,6 +9,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "peerDependencies": {
+    "@typescript-package/collection-adapter": "^0.2.0",
     "@typescript-package/listeners": "^0.0.1"
   },
   "scripts": {
