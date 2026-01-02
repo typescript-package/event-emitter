@@ -1,6 +1,6 @@
 import { NamedEventEmitter } from "../lib";
 
-const eventEmitter = new NamedEventEmitter(false, {
+const eventEmitter = new NamedEventEmitter({async: false}, {
   'event1': [(msg: string) => {
     console.log(`Listener 1: ${msg}`);
   }],
