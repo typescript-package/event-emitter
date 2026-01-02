@@ -3,7 +3,7 @@ import { Listeners } from "@typescript-package/listeners";
 // Type & Interface.
 import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 /**
- * @description The base class for an event emitter pattern.
+ * @description The base abstraction class for an event emitter pattern.
  * @export
  * @abstract
  * @class EventEmitterBase
@@ -45,18 +45,20 @@ export abstract class EventEmitterBase<
   /**
    * Creates an instance of `EventEmitterBase`.
    * @constructor
-   * @param {R} async Whether the emitter listeners operate asynchronously.
+   * @param {{async?: R, value?: T}} param0 The object with configuration options.
+   * @param {R} param0.async Whether the emitter listeners operate asynchronously.
+   * @param {T} param0.value The underlying data for the listeners for capture its type only.
    * @param {new (...listeners: E[]) => A} adapter The adapter class to manage listeners.
-   * @param {?(E | E[]} [events] The initial listeners.
+   * @param {?(E | E[])} [events] The initial listeners.
    */
   constructor(
-    async: R,
+    {async, value}: {async?: R, value?: T},
     adapter: new (...listeners: E[]) => A,
     events?: E | E[]
   ) {
-    this.#listeners = new Listeners(async, adapter, ...(Array.isArray(events) ? events : events ? [events] : []));
+    this.#listeners = new Listeners(async ?? false, adapter, ...(Array.isArray(events) ? events : events ? [events] : []));
     this.#adapter = adapter;
-    this.#async = async;
+    this.#async = async ?? false as R;
   }
 
   /**
