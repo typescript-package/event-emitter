@@ -4,14 +4,14 @@ import { Listeners } from "@typescript-package/listeners";
 import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 import { ListenersFor } from "../type";
 /**
- * @description A class that implements an event emitter pattern.
+ * @description A base abstraction class that implements a named event emitter pattern.
  * @export
  * @abstract
  * @class NamedEventEmitterBase
- * @template {Record<string, ListenerFunction<any[]>>} E 
- * @template [T=any] 
- * @template {boolean} [R=false] 
- * @template {ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], T, R>} [A=any] 
+ * @template {Record<string, ListenerFunction<any[]>>} E Object mapping event names to their listener function types.
+ * @template [T=any] The type of the underlying data for the listeners.
+ * @template {boolean} [R=false] The `boolean` type of the async flag for the listeners.
+ * @template {ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], T, R>} [A=any] The adapter type for the listeners.
  */
 export abstract class NamedEventEmitterBase<
   E extends Record<string, ListenerFunction<any[]>>,
@@ -44,25 +44,27 @@ export abstract class NamedEventEmitterBase<
   #pausedEvents: Set<keyof E> = new Set();
 
   /**
-   * Creates an instance of `EventEmitterBase`.
+   * Creates an instance of `NamedEventEmitterBase`.
    * @constructor
-   * @param {R} async Whether the emitter listeners operate asynchronously.
+   * @param {{async?: R, value?: T}} param0 
+   * @param {R} param0.async Whether the emitter listeners operate asynchronously.
+   * @param {T} param0.value The value underlying data for the listeners for capture its type only.
    * @param {new (...listeners: E[keyof E][]) => A} adapter The adapter class to manage listeners.
    * @param {?Partial<{ [K in keyof E]: E[K][] }>} [events] The initial events and their listeners.
    */
   constructor(
-    async: R,
+    {async, value}: {async?: R, value?: T},
     adapter: new (...listeners: E[keyof E][]) => A,
     events?: Partial<{ [K in keyof E]: E[K][] }>
   ) {
+    this.#adapter = adapter;
+    this.#async = async ?? false as R;
     for (const [event, listeners] of Object.entries(events ?? {})) {
-      this.#events.set(event as keyof E, new Listeners(async, adapter));
+      this.#events.set(event as keyof E, new Listeners(this.#async, this.#adapter));
       for (const listener of listeners!) {
         this.#events.get(event as keyof E)!.add(listener);
       }
     }
-    this.#adapter = adapter;
-    this.#async = async;
   }
 
   /**
