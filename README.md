@@ -62,7 +62,7 @@ The base abstraction class for an event emitter pattern.
 import { EventEmitter } from '@typescript-package/event-emitter';
 ```
 
-[`EventEmitterBase`](https://github.com/typescript-package/hooks/blob/main/src/lib/event-emitter.base.ts)
+[`EventEmitterBase`](https://github.com/typescript-package/event-emitter/blob/main/src/lib/event-emitter.base.ts)
 
 ### `NamedEventEmitterBase`
 
@@ -72,7 +72,7 @@ A base abstraction class that implements a named event emitter pattern.
 import { NamedEventEmitterBase } from '@typescript-package/event-emitter';
 ```
 
-[`NamedEventEmitterBase`](https://github.com/typescript-package/hooks/blob/main/src/lib/named-event-emitter.base.ts)
+[`NamedEventEmitterBase`](https://github.com/typescript-package/event-emitter/blob/main/src/lib/named-event-emitter.base.ts)
 
 ## Concrete
 
@@ -93,7 +93,7 @@ eventEmitter.emit('Hello, World!');
 
 ```
 
-[`EventEmitter`](https://github.com/typescript-package/hooks/blob/main/src/lib/event-emitter.class.ts)
+[`EventEmitter`](https://github.com/typescript-package/event-emitter/blob/main/src/lib/event-emitter.class.ts)
 
 ### `NamedEventEmitter`
 
@@ -126,7 +126,7 @@ eventEmitter.listeners('event1')?.forEach(listener => {
 });
 ```
 
-[`NamedEventEmitter`](https://github.com/typescript-package/hooks/blob/main/src/lib/named-event-emitter.class.ts)
+[`NamedEventEmitter`](https://github.com/typescript-package/event-emitter/blob/main/src/lib/named-event-emitter.class.ts)
 
 ## Contributing
 
