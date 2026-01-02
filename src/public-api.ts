@@ -5,6 +5,8 @@
 export {
   // Abstract.
   EventEmitterBase,
+  NamedEventEmitterBase,
   // Concrete.
-  EventEmitter
+  EventEmitter,
+  NamedEventEmitter
 } from './lib';
