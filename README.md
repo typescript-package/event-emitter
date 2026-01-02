@@ -22,8 +22,10 @@ A **lightweight** TypeScript package for event emitter.
 - [Api](#api)
   - Abstract
     - [`EventEmitterBase`](#eventemitterbase)
+    - [`NamedEventEmitterBase`](#namedeventemitterbase)
   - Concrete
     - [`EventEmitter`](#eventemitter)
+    - [`NamedEventEmitter`](#namedeventemitter)
 - [Contributing](#contributing)
 - [Code of Conduct](code-of-conduct)
 - [Git](#git)
@@ -42,9 +44,11 @@ npm install @typescript-package/event-emitter --save-peer
 ```typescript
 import {
   // Abstract.
-  EVentEmitterBase,
+  EventEmitterBase,
+  NamedEventEmitterBase,
   // Concrete.
-  EVentEmitter
+  EventEmitter,
+  NamedEventEmitter,
 } from '@typescript-package/event-emitter';
 ```
 
@@ -52,25 +56,77 @@ import {
 
 ### `EventEmitterBase`
 
-The `EventEmitterBase`, a class that implements an event emitter pattern.
+The base abstraction class for an event emitter pattern.
 
 ```typescript
 import { EventEmitter } from '@typescript-package/event-emitter';
 ```
 
-[Source](https://github.com/typescript-package/hooks/blob/main/src/lib/event-emitter.base.ts)
+[`EventEmitterBase`](https://github.com/typescript-package/hooks/blob/main/src/lib/event-emitter.base.ts)
+
+### `NamedEventEmitterBase`
+
+A base abstraction class that implements a named event emitter pattern.
+
+```typescript
+import { NamedEventEmitterBase } from '@typescript-package/event-emitter';
+```
+
+[`NamedEventEmitterBase`](https://github.com/typescript-package/hooks/blob/main/src/lib/named-event-emitter.base.ts)
 
 ## Concrete
 
 ### `EventEmitter`
 
-The `EventEmitter`, a class that implements an event emitter pattern.
+A concrete class that implements an event emitter pattern.
 
 ```typescript
 import { EventEmitter } from '@typescript-package/event-emitter';
+
+const eventEmitter = new EventEmitter({
+  // adapter: ListenersSetAdapter,
+  async: false
+});
+
+eventEmitter.on((msg) => console.log(`Received: ${msg}`));
+eventEmitter.emit('Hello, World!');
+
 ```
 
-[Source](https://github.com/typescript-package/hooks/blob/main/src/lib/event-emitter.class.ts)
+[`EventEmitter`](https://github.com/typescript-package/hooks/blob/main/src/lib/event-emitter.class.ts)
+
+### `NamedEventEmitter`
+
+A concrete class that implements a named event emitter pattern.
+
+```typescript
+import { NamedEventEmitter } from '@typescript-package/event-emitter';
+
+const eventEmitter = new NamedEventEmitter({async: false}, {
+  'event1': [(msg: string) => {
+    console.log(`Listener 1: ${msg}`);
+  }],
+  'event2': [(num: number) => {
+    console.log(`Event 2 received number: ${num}`);
+  }]
+});
+
+eventEmitter.clear('event1')
+eventEmitter.on('event1', (msg: string) => {
+  console.log(`Listener 2: ${msg}`);
+});
+
+eventEmitter.on('event2', (num: number) => {
+  console.log(`Event 2 received number: ${num}`);
+});
+
+eventEmitter.emit('event1', 'Hello, World!');
+eventEmitter.listeners('event1')?.forEach(listener => {
+  listener('Hello, World!');
+});
+```
+
+[`NamedEventEmitter`](https://github.com/typescript-package/hooks/blob/main/src/lib/named-event-emitter.class.ts)
 
 ## Contributing
 
