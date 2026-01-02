@@ -5,19 +5,20 @@ import { ListenersSetAdapter } from "../adapter";
 // Type & Interface.
 import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 /**
- * @description
+ * @description A concrete class that implements a named event emitter pattern.
  * @export
  * @class NamedEventEmitter
- * @template {Record<string, ListenerFunction<any[]>>} E 
- * @template {boolean} [R=false] 
+ * @template {Record<string, ListenerFunction<any[]>>} E Object mapping event names to their listener function types.
+ * @template {boolean} [R=false] The `boolean` type of the async flag for the listeners.
  * @template {ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], any, R>} [A=R extends false ?  ListenersSetAdapter<E[keyof E]> : any] 
  * @extends {NamedEventEmitterBase<E, any, R, A>}
  */
 export class NamedEventEmitter<
   E extends Record<string, ListenerFunction<any[]>>,
+  T = any,
   R extends boolean = false,
-  A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], any, R> = R extends false ?  ListenersSetAdapter<E[keyof E]> : any
-> extends NamedEventEmitterBase<E, any, R, A> {
+  A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], T, R> = R extends false ?  ListenersSetAdapter<E[keyof E]> : any
+> extends NamedEventEmitterBase<E, T, R, A> {
   /**
    * Creates an instance of `NamedEventEmitter`.
    * @constructor
@@ -26,10 +27,9 @@ export class NamedEventEmitter<
    * @param {new (...listeners: E[keyof E][]) => A} [adapter=ListenersSetAdapter as any] The adapter class to manage listeners.
    */
   constructor(
-    async: R,
+    {adapter, async, value}: {adapter?: new (...listeners: E[keyof E][]) => A, async?: R, value?: T},
     events?: Partial<{ [K in keyof E]: E[K][] }>,
-    adapter: new (...listeners: E[keyof E][]) => A = ListenersSetAdapter as any
   ) {
-    super(async, adapter, events);
+    super({async}, adapter ?? ListenersSetAdapter as any, events);
   }
 }
