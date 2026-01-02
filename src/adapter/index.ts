@@ -1,0 +1,1 @@
+export { ListenersSetAdapter } from './lib';
