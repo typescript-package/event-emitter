@@ -4,7 +4,7 @@ import { Listeners } from "@typescript-package/listeners";
 import type { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 import type { EventListeners, ListenersFor } from "../type";
 /**
- * @description A base abstraction class that implements a named event emitter pattern.
+ * @description A base abstraction class that implements a named event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
  * @export
  * @abstract
  * @class NamedEventEmitterBase

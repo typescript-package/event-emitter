@@ -3,7 +3,7 @@ import { Listeners } from "@typescript-package/listeners";
 // Type & Interface.
 import type { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 /**
- * @description The base abstraction class for an event emitter pattern.
+ * @description The base abstraction class for an event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
  * @export
  * @abstract
  * @class EventEmitterBase

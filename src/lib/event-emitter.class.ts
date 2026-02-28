@@ -5,7 +5,7 @@ import { ListenersSetAdapter } from "../adapter";
 // Type & Interface.
 import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 /**
- * @description A concrete class that implements an event emitter pattern.
+ * @description A concrete class for an event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
  * @export
  * @class EventEmitter
  * @template {ListenerFunction<any[]>} L The listener function type.
