@@ -1,66 +1,64 @@
 // Class.
 import { Listeners } from "@typescript-package/listeners";
 // Type & Interface.
-import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
-import { ListenersFor } from "../type";
+import type { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
+import type { EventListeners, ListenersFor } from "../type";
 /**
  * @description A base abstraction class that implements a named event emitter pattern.
  * @export
  * @abstract
  * @class NamedEventEmitterBase
  * @template {Record<string, ListenerFunction<any[]>>} E Object mapping event names to their listener function types.
- * @template [T=any] The type of the underlying data for the listeners.
- * @template {boolean} [R=false] The `boolean` type of the async flag for the listeners.
- * @template {ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], T, R>} [A=any] The adapter type for the listeners.
+ * @template {ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], T, R>} [A=ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], any, any>] The adapter type for the listeners.
+ * @template [T=A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], infer U, any> ? U : any] The type of the listeners underlying data, inferred from the adapter if possible.
+ * @template {boolean} [R=A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], any, infer V> ? V : false] The async flag for the listeners, inferred from the adapter if possible.
  */
 export abstract class NamedEventEmitterBase<
   E extends Record<string, ListenerFunction<any[]>>,
-  T = any,
-  R extends boolean = false,
-  A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], T, R> = any
+  A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], T, R> = ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], any, any>,
+  T = A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], infer U, any> ? U : any,
+  R extends boolean = A extends ListenersAdapter<Parameters<E[keyof E]>, E[keyof E], any, infer V> ? V : false
 > {
   /**
    * @description The adapter class used to manage listeners.
    * @type {new (...listeners: E[keyof E][]) => A}
    */
-  #adapter: new (...listeners: E[keyof E][]) => A;
+  #adapterCtor: new (...listeners: E[keyof E][]) => A;
 
   /**
-   * @description Indicates whether the emitter listeners operate asynchronously.
+   * @description The async flag for the listeners.
    * @type {R}
    */
   #async: R;
 
   /**
    * @description The map of events to their listeners.
-   * @type {Map<keyof E, Listeners<Parameters<E[keyof E]>, E[keyof E], T, R, A>>}
+   * @type {Map<keyof E, Listeners<A, E[keyof E], Parameters<E[keyof E]>, T, R>>}
    */
-  #events: Map<keyof E, Listeners<Parameters<E[keyof E]>, E[keyof E], T, R, A>> = new Map();
+  #events: Map<keyof E, Listeners<A, E[keyof E], Parameters<E[keyof E]>, T, R>> = new Map();
 
   /**
    * @description The set of names of paused events.
    * @type {Set<keyof E>}
    */
   #pausedEvents: Set<keyof E> = new Set();
-
+  
   /**
    * Creates an instance of `NamedEventEmitterBase`.
    * @constructor
-   * @param {{async?: R, value?: T}} param0 
-   * @param {R} param0.async Whether the emitter listeners operate asynchronously.
-   * @param {T} param0.value The value underlying data for the listeners for capture its type only.
-   * @param {new (...listeners: E[keyof E][]) => A} adapter The adapter class to manage listeners.
-   * @param {?Partial<{ [K in keyof E]: E[K][] }>} [events] The initial events and their listeners.
+   * @param {R} async Whether the emitter listeners operate asynchronously.
+   * @param {new (...listeners: E[keyof E][]) => A} adapter  The adapter class to manage listeners.
+   * @param {?EventListeners<E>} [events] The initial events and their listeners.
    */
   constructor(
-    {async, value}: {async?: R, value?: T},
+    async: R,
     adapter: new (...listeners: E[keyof E][]) => A,
-    events?: Partial<{ [K in keyof E]: E[K][] }>
+    events?: EventListeners<E>
   ) {
-    this.#adapter = adapter;
-    this.#async = async ?? false as R;
+    this.#adapterCtor = adapter;
+    this.#async = async;
     for (const [event, listeners] of Object.entries(events ?? {})) {
-      this.#events.set(event as keyof E, new Listeners(this.#async, this.#adapter));
+      this.#events.set(event as keyof E, new Listeners(async, adapter));
       for (const listener of listeners!) {
         this.#events.get(event as keyof E)!.add(listener);
       }
@@ -168,7 +166,7 @@ export abstract class NamedEventEmitterBase<
    * @returns {this} The current instance.
    */
   public on<Event extends keyof E>(event: Event, listener: E[Event]): this {
-    return !this.#events.has(event) && this.#events.set(event, new Listeners(this.#async, this.#adapter)),
+    return !this.#events.has(event) && this.#events.set(event, new Listeners(this.#async, this.#adapterCtor)),
       this.#events.get(event)!.add(listener),
       this;
   }
@@ -182,7 +180,7 @@ export abstract class NamedEventEmitterBase<
    * @returns {this} The current instance.
    */
   public once<Event extends keyof E>(event: Event, listener: E[Event]): this {
-    return !this.#events.has(event) && this.#events.set(event, new Listeners(this.#async, this.#adapter)),
+    return !this.#events.has(event) && this.#events.set(event, new Listeners(this.#async, this.#adapterCtor)),
       this.#events.get(event)!.once(listener),
       this;
   }
