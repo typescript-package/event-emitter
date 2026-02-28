@@ -3,6 +3,10 @@
  */
 
 export {
+  ListenersSetAdapter
+} from './adapter';
+
+export {
   // Abstract.
   EventEmitterBase,
   NamedEventEmitterBase,
@@ -10,3 +14,8 @@ export {
   EventEmitter,
   NamedEventEmitter
 } from './lib';
+
+export type {
+  EventListeners,
+  ListenersFor
+} from './type';

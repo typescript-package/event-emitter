@@ -1,40 +1,63 @@
 // Class.
 import { Listeners } from "@typescript-package/listeners";
 // Type & Interface.
-import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
+import type { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 /**
- * @description The base abstraction class for an event emitter pattern.
+ * @description The base abstraction class for an event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
  * @export
  * @abstract
  * @class EventEmitterBase
- * @template {ListenerFunction<any[]>} E The listener function type.
+ * @template {ListenerFunction<any[]>} L The listener function type.
  * @template [T=any] The type of the listeners underlying data.
  * @template {boolean} [R=false] The async flag for the listeners.
- * @template {ListenersAdapter<Parameters<E>, E, T, R>} [A=any] The adapter type for the listeners.
+ * @template {ListenersAdapter<Parameters<L>, L, T, R>} [A=ListenersAdapter<Parameters<L>, L, T, R>] The adapter type for the listeners.
  */
 export abstract class EventEmitterBase<
-  E extends ListenerFunction<any[]>,
+  L extends ListenerFunction<any[]>,
   T = any,
   R extends boolean = false,
-  A extends ListenersAdapter<Parameters<E>, E, T, R> = any
+  A extends ListenersAdapter<Parameters<L>, L, T, R> = ListenersAdapter<Parameters<L>, L, T, R>
 > {
   /**
-   * @description The adapter class used to manage listeners.
-   * @type {new (...listeners: E[]) => A}
-   */
-  #adapter: new (...listeners: E[]) => A;
-
-  /**
-   * @description Indicates whether the emitter listeners operate asynchronously.
+   * @description Gets the async flag for the listeners.
+   * @public
+   * @readonly
    * @type {R}
    */
-  #async: R;
+  public get async(): R {
+    return this.#listeners.async;
+  }
+
+  /**
+   * @description Gets the listeners for a specific event type.
+   * @public
+   * @readonly
+   * @type {Listeners<A, L, Parameters<L>, T, R>} The listeners for the event.
+   */
+  public get listeners(): Listeners<A, L, Parameters<L>, T, R> {
+    return this.#listeners;
+  }
+
+  /**
+   * @description Gets the adapter constructor.
+   * @protected
+   * @returns {new (...listeners: {}) => A} The adapter constructor.
+   */
+  protected adapterCtor() {
+    return this.#adapterCtor;
+  }
+
+  /**
+   * @description The adapter class used to manage listeners.
+   * @type {new (...listeners: L[]) => A}
+   */
+  #adapterCtor: new (...listeners: L[]) => A;
 
   /**
    * @description The map of events to their listeners.
-   * @type {Listeners<Parameters<E>, E, T, R, A>}
+   * @type {Listeners<A, L, Parameters<L>, T, R>}
    */
-  #listeners: Listeners<Parameters<E>, E, T, R, A>;
+  #listeners: Listeners<A, L, Parameters<L>, T, R>;
 
   /**
    * @description The paused state of the event emitter.
@@ -45,20 +68,21 @@ export abstract class EventEmitterBase<
   /**
    * Creates an instance of `EventEmitterBase`.
    * @constructor
-   * @param {{async?: R, value?: T}} param0 The object with configuration options.
-   * @param {R} param0.async Whether the emitter listeners operate asynchronously.
-   * @param {T} param0.value The underlying data for the listeners for capture its type only.
-   * @param {new (...listeners: E[]) => A} adapter The adapter class to manage listeners.
-   * @param {?(E | E[])} [events] The initial listeners.
+   * @param {R} async Whether the emitter listeners operate asynchronously.
+   * @param {new (...listeners: L[]) => A} adapter The adapter class to manage listeners.
+   * @param {?(L | L[])} [listeners] The initial listeners.
    */
   constructor(
-    {async, value}: {async?: R, value?: T},
-    adapter: new (...listeners: E[]) => A,
-    events?: E | E[]
+    async: R,
+    adapter: new (...listeners: L[]) => A,
+    listeners?: L | L[]
   ) {
-    this.#listeners = new Listeners(async ?? false, adapter, ...(Array.isArray(events) ? events : events ? [events] : []));
-    this.#adapter = adapter;
-    this.#async = async ?? false as R;
+    this.#listeners = new Listeners(
+      async,
+      adapter,
+      ...(Array.isArray(listeners) ? listeners : listeners ? [listeners] : [])
+    );
+    this.#adapterCtor = adapter;
   }
 
   /**
@@ -82,9 +106,9 @@ export abstract class EventEmitterBase<
   /**
    * @description Emits an event, calling all listeners for that event type.
    * @public
-   * @param {...Parameters<E>} args The arguments for the event listeners.
+   * @param {...Parameters<L>} args The arguments for the event listeners.
    */
-  public emit(...args: Parameters<E>): this {
+  public emit(...args: Parameters<L>): this {
     return !this.isPaused() && this.#listeners.forEach(listener => listener(...args)),
       this
   }
@@ -99,23 +123,14 @@ export abstract class EventEmitterBase<
   }
 
   /**
-   * @description Gets the listeners for a specific event type.
-   * @public
-   * @returns {(ListenersFor<Event, E, T, R> | undefined)} The listeners for the event.
-   */
-  public listeners(): Listeners<Parameters<E>, E, T, R, A> {
-    return this.#listeners;
-  }
-
-  /**
    * @description Emits an event asynchronously, calling all listeners for that event type.
    * @public
    * @async
-   * @param {...Parameters<E>} args The arguments for the event listeners.
+   * @param {...Parameters<L>} args The arguments for the event listeners.
    * @returns {this} The current instance.
    */
-  public async emitAsync(...args: Parameters<E>): Promise<this> {
-    const listeners = this.listeners();
+  public async emitAsync(...args: Parameters<L>): Promise<this> {
+    const listeners = this.listeners;
     if (!listeners || this.isPaused()) {
       return this;
     }
@@ -127,10 +142,10 @@ export abstract class EventEmitterBase<
   /**
    * @description Adds a listener for event.
    * @public
-   * @param {E} listener The listener function.
+   * @param {L} listener The listener function.
    * @returns {this} The current instance.
    */
-  public on(listener: E): this {
+  public on(listener: L): this {
     return this.#listeners.add(listener),
       this;
   }
@@ -138,10 +153,10 @@ export abstract class EventEmitterBase<
   /**
    * @description Adds a one-time listener for event.
    * @public
-   * @param {E} listener The listener function.
+   * @param {L} listener The listener function.
    * @returns {this} The current instance.
    */
-  public once(listener: E): this {
+  public once(listener: L): this {
     return this.#listeners.once(listener),
       this;
   }
@@ -149,10 +164,10 @@ export abstract class EventEmitterBase<
   /**
    * @description Removes a listener for event.
    * @public
-   * @param {E} listener The listener function.
+   * @param {L} listener The listener function.
    * @returns {this} The current instance.
    */
-  public off(listener: E): this {
+  public off(listener: L): this {
     return this.#listeners.delete(listener), this;
   }
 

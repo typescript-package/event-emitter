@@ -26,6 +26,9 @@ A **lightweight** TypeScript package for event emitter.
   - Concrete
     - [`EventEmitter`](#eventemitter)
     - [`NamedEventEmitter`](#namedeventemitter)
+  - Type
+    - [`EventListeners`](#eventlisteners)
+    - [`ListenersFor`](#listenersfor)
 - [Contributing](#contributing)
 - [Code of Conduct](code-of-conduct)
 - [Git](#git)
@@ -52,11 +55,11 @@ import {
 } from '@typescript-package/event-emitter';
 ```
 
-## Abstract
+### Abstract
 
 ### `EventEmitterBase`
 
-The base abstraction class for an event emitter pattern.
+The base abstraction class for an event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
 
 ```typescript
 import { EventEmitter } from '@typescript-package/event-emitter';
@@ -66,7 +69,7 @@ import { EventEmitter } from '@typescript-package/event-emitter';
 
 ### `NamedEventEmitterBase`
 
-A base abstraction class that implements a named event emitter pattern.
+A base abstraction class that implements a named event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
 
 ```typescript
 import { NamedEventEmitterBase } from '@typescript-package/event-emitter';
@@ -74,11 +77,11 @@ import { NamedEventEmitterBase } from '@typescript-package/event-emitter';
 
 [`NamedEventEmitterBase`](https://github.com/typescript-package/event-emitter/blob/main/src/lib/named-event-emitter.base.ts)
 
-## Concrete
+### Concrete
 
 ### `EventEmitter`
 
-A concrete class that implements an event emitter pattern.
+A concrete class for an event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
 
 ```typescript
 import { EventEmitter } from '@typescript-package/event-emitter';
@@ -97,7 +100,7 @@ eventEmitter.emit('Hello, World!');
 
 ### `NamedEventEmitter`
 
-A concrete class that implements a named event emitter pattern.
+A concrete class that implements a named event emitter pattern with replaceable listeners adapter and asynchronous capabilities.
 
 ```typescript
 import { NamedEventEmitter } from '@typescript-package/event-emitter';
@@ -128,6 +131,26 @@ eventEmitter.listeners('event1')?.forEach(listener => {
 
 [`NamedEventEmitter`](https://github.com/typescript-package/event-emitter/blob/main/src/lib/named-event-emitter.class.ts)
 
+### Type
+
+### `EventListeners`
+
+A type representing a partial mapping of event names to their listener arrays.
+
+```typescript
+import { EventListeners } from '@typescript-package/event-emitter';
+```
+
+### `ListenersFor`
+
+A type representing the listeners for a specific event in a named event emitter, utilizing a specified listeners adapter and supporting asynchronous capabilities.
+
+```typescript
+import { EventListeners } from '@typescript-package/event-emitter';
+```
+
+[`EventListeners`](https://github.com/typescript-package/event-emitter/blob/main/src/type/listeners-for.type.ts)
+
 ## Contributing
 
 Your contributions are valued! If you'd like to contribute, please feel free to submit a pull request. Help is always appreciated.
@@ -138,19 +161,23 @@ If you find this package useful and would like to support its and general develo
 
 Support via:
 
-- [Stripe](https://donate.stripe.com/dR614hfDZcJE3wAcMM)
-- [Revolut](https://checkout.revolut.com/pay/048b10a3-0e10-42c8-a917-e3e9cb4c8e29)
-- [GitHub](https://github.com/sponsors/angular-package/sponsorships?sponsor=sciborrudnicki&tier_id=83618)
+- [4Fund](https://4fund.com/bruubs)
 - [DonorBox](https://donorbox.org/become-a-sponsor-to-the-angular-package?default_interval=o)
+- [GitHub](https://github.com/sponsors/angular-package/sponsorships?sponsor=sciborrudnicki&tier_id=83618)
+- [Ko-fi](https://ko-fi.com/sterblack)
+- [OpenCollective](https://opencollective.com/sterblack)
 - [Patreon](https://www.patreon.com/checkout/angularpackage?rid=0&fan_landing=true&view_as=public)
+- [PayPal](https://paypal.me/sterblack)
+- [Stripe](https://donate.stripe.com/dR614hfDZcJE3wAcMM)
+- ~~[Revolut](https://checkout.revolut.com/pay/048b10a3-0e10-42c8-a917-e3e9cb4c8e29)~~
 
 or via Trust Wallet
 
-- [XLM](https://link.trustwallet.com/send?coin=148&address=GAFFFB7H3LG42O6JA63FJDRK4PP4JCNEOPHLGLLFH625X2KFYQ4UYVM4)
-- [USDT (BEP20)](https://link.trustwallet.com/send?coin=20000714&address=0xA0c22A2bc7E37C1d5992dFDFFeD5E6f9298E1b94&token_id=0x55d398326f99059fF775485246999027B3197955)
-- [ETH](https://link.trustwallet.com/send?coin=60&address=0xA0c22A2bc7E37C1d5992dFDFFeD5E6f9298E1b94)
-- [BTC](https://link.trustwallet.com/send?coin=0&address=bc1qnf709336tfl57ta5mfkf4t9fndhx7agxvv9svn)
 - [BNB](https://link.trustwallet.com/send?coin=20000714&address=0xA0c22A2bc7E37C1d5992dFDFFeD5E6f9298E1b94)
+- [BTC](https://link.trustwallet.com/send?coin=0&address=bc1qnf709336tfl57ta5mfkf4t9fndhx7agxvv9svn)
+- [ETH](https://link.trustwallet.com/send?coin=60&address=0xA0c22A2bc7E37C1d5992dFDFFeD5E6f9298E1b94)
+- [USDT (BEP20)](https://link.trustwallet.com/send?coin=20000714&address=0xA0c22A2bc7E37C1d5992dFDFFeD5E6f9298E1b94&token_id=0x55d398326f99059fF775485246999027B3197955)
+- [XLM](https://link.trustwallet.com/send?coin=148&address=GAFFFB7H3LG42O6JA63FJDRK4PP4JCNEOPHLGLLFH625X2KFYQ4UYVM4)
 
 Thanks for your support!
 
