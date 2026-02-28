@@ -13,5 +13,7 @@ import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
 export type ListenersFor<
   Event extends keyof E,
   E extends Record<string, ListenerFunction<any[]>>,
-  T = any, R extends boolean = false
-> = Listeners<Parameters<E[Event]>, E[Event], T, R, ListenersAdapter<Parameters<E[Event]>, E[Event], T, R>>
+  T = any,
+  R extends boolean = false,
+  A extends ListenersAdapter<Parameters<E[Event]>, E[Event], T, R> = ListenersAdapter<Parameters<E[Event]>, E[Event], T, R>
+> = Listeners<A, E[Event], Parameters<E[Event]>, T, R>
