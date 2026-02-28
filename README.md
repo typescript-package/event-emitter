@@ -9,10 +9,22 @@
 
 ## @typescript-package/event-emitter
 
+[![Gitter][gitter-badge]][gitter-chat]
+[![Discord][discord-badge]][discord-channel]
+[![Twitter][twitter-badge]][twitter-follow]
+
 <!-- npm badge -->
 [![npm version][typescript-package-npm-badge-svg]][typescript-package-npm-badge]
+
+<!-- GitHub badges -->
 [![GitHub issues][typescript-package-badge-issues]][typescript-package-issues]
+[![GitHub forks][typescript-package-badge-forks]][typescript-package-forks]
+[![GitHub stars][typescript-package-badge-stars]][typescript-package-stars]
 [![GitHub license][typescript-package-badge-license]][typescript-package-license]
+
+<!-- Sponsors -->
+[![GitHub Sponsors][github-badge-sponsor]][github-sponsor-link]
+[![Patreon Sponsors][patreon-badge]][patreon-link]
 
 A **lightweight** TypeScript package for event emitter.
 
@@ -141,15 +153,17 @@ A type representing a partial mapping of event names to their listener arrays.
 import { EventListeners } from '@typescript-package/event-emitter';
 ```
 
+[`EventListeners`](https://github.com/typescript-package/event-emitter/blob/main/src/type/event-listeners.type.ts)
+
 ### `ListenersFor`
 
 A type representing the listeners for a specific event in a named event emitter, utilizing a specified listeners adapter and supporting asynchronous capabilities.
 
 ```typescript
-import { EventListeners } from '@typescript-package/event-emitter';
+import { ListenersFor } from '@typescript-package/event-emitter';
 ```
 
-[`EventListeners`](https://github.com/typescript-package/event-emitter/blob/main/src/type/listeners-for.type.ts)
+[`ListenersFor`](https://github.com/typescript-package/event-emitter/blob/main/src/type/listeners-for.type.ts)
 
 ## Contributing
 
@@ -220,10 +234,23 @@ How do I know when to release 1.0.0?
 
 MIT © typescript-package ([license][typescript-package-license])
 
+## Related packages
+
+- **[@typescript-package/collection](https://github.com/typescript-package/collection)**: A lightweight TypeScript library for data collection.
+- **[@typescript-package/collection-adapter](https://github.com/typescript-package/collection-adapter)**: A TypeScript library for collection adapters.
+- **[@typescript-package/data](https://github.com/typescript-package/data)**: A lightweight TypeScript library for basic data management.
+- **[@typescript-package/listeners](https://github.com/typescript-package/listeners)**: A lightweight TypeScript library for managing listeners.
+
+<!--  -->
+[github-badge-sponsor]: https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&link=https://github.com/sponsors/angular-package
+[github-sponsor-link]: https://github.com/sponsors/angular-package
+[patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dangularpackage%26type%3Dpatrons&style=flat
+[patreon-link]: https://www.patreon.com/join/angularpackage/checkout?fan_landing=true&rid=0
+
 <!-- This package: typescript-package  -->
   <!-- GitHub: badges -->
   [typescript-package-badge-issues]: https://img.shields.io/github/issues/typescript-package/event-emitter
-  [isscript-package-badge-forks]: https://img.shields.io/github/forks/typescript-package/event-emitter
+  [typescript-package-badge-forks]: https://img.shields.io/github/forks/typescript-package/event-emitter
   [typescript-package-badge-stars]: https://img.shields.io/github/stars/typescript-package/event-emitter
   [typescript-package-badge-license]: https://img.shields.io/github/license/typescript-package/event-emitter
   <!-- GitHub: badges links -->
@@ -245,3 +272,18 @@ MIT © typescript-package ([license][typescript-package-license])
 [git-commit-angular]: https://gist.github.com/stephenparish/9941e89d80e2bc58a153
 [git-commit-karma]: http://karma-runner.github.io/0.10/dev/git-commit-msg.html
 [git-commit-conventional]: https://www.conventionalcommits.org/en/v1.0.0/
+
+<!-- Discord -->
+[discord-badge]: https://img.shields.io/discord/925168966098386944?style=social&logo=discord&label=Discord
+[discord-channel]: https://discord.com/invite/rUCR2CW75G
+
+<!-- Gitter -->
+[gitter-badge]: https://img.shields.io/gitter/room/angular-package/ap-sass?style=social&logo=gitter
+[gitter-chat]: https://app.gitter.im/#/room/#ap-sass:gitter.im
+
+<!-- Twitter -->
+[twitter-badge]: https://img.shields.io/twitter/follow/angularpackage?label=%40angularpackage&style=social
+[twitter-follow]: https://twitter.com/angularpackage
+
+<!-- GIT -->
+[git-semver]: http://semver.org/
