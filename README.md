@@ -153,15 +153,17 @@ A type representing a partial mapping of event names to their listener arrays.
 import { EventListeners } from '@typescript-package/event-emitter';
 ```
 
+[`EventListeners`](https://github.com/typescript-package/event-emitter/blob/main/src/type/event-listeners.type.ts)
+
 ### `ListenersFor`
 
 A type representing the listeners for a specific event in a named event emitter, utilizing a specified listeners adapter and supporting asynchronous capabilities.
 
 ```typescript
-import { EventListeners } from '@typescript-package/event-emitter';
+import { ListenersFor } from '@typescript-package/event-emitter';
 ```
 
-[`EventListeners`](https://github.com/typescript-package/event-emitter/blob/main/src/type/listeners-for.type.ts)
+[`ListenersFor`](https://github.com/typescript-package/event-emitter/blob/main/src/type/listeners-for.type.ts)
 
 ## Contributing
 
