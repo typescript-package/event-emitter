@@ -8,39 +8,30 @@ import { ListenersAdapter, ListenerFunction } from "@typedly/listeners";
  * @description A concrete class that implements an event emitter pattern.
  * @export
  * @class EventEmitter
- * @template {ListenerFunction<any[]>} E The object type of events.
- * @template [T=any] The type of the listeners underlying data.
+ * @template {ListenerFunction<any[]>} L The listener function type.
+ * @template {ListenersAdapter<Parameters<L>, L, T, any>} [A=ListenersAdapter<Parameters<L>, L, any, any>] The adapter type for the listeners.
+ * @template [T=A extends ListenersAdapter<Parameters<L>, L, infer U, any> ? U : any] The type of the listeners underlying data, inferred from the adapter if possible.
  * @template {boolean} [R=false] The async flag for the listeners.
- * @template {ListenersAdapter<Parameters<E>, E, any, R >} [A=R extends false ? ListenersSetAdapter<E> : any] The adapter type for the listeners.
- * @extends {EventEmitterBase<E, any, R, A>}Base class abstracting common event emitter functionality.
+ * @extends {EventEmitterBase<L, T, R, A>}
  */
 export class EventEmitter<
-  E extends ListenerFunction<any[]>,
-  T = any,
+  L extends ListenerFunction<any[]>,
+  A extends ListenersAdapter<Parameters<L>, L, T, any> = ListenersAdapter<Parameters<L>, L, any, any>,
+  T = A extends ListenersAdapter<Parameters<L>, L, infer U, any> ? U : any,
   R extends boolean = false,
-  A extends ListenersAdapter<Parameters<E>, E, T, R > = R extends false ? ListenersSetAdapter<E> : any
-> extends EventEmitterBase<E, T, R, A> {
+> extends EventEmitterBase<L, T, R, A> {
   /**
    * Creates an instance of `EventEmitter`.
    * @constructor
-   * @param {R} async 
-   * @param {?(E | E[])} [events] 
-   * @param {new (...listeners: E[]) => A} [adapter=ListenersSetAdapter as any] 
-   */
-  
-  /**
-   * Creates an instance of `EventEmitter`.
-   * @constructor
-   * @param {{adapter?: new (...listeners: E[]) => A, async?: R, value?: T}} param0 
-   * @param {new (...listeners: {}) => A} param0.adapter The adapter class to manage listeners.
+   * @param {{adapter?: new (...listeners: L[]) => A, async?: R}} param0 The options for the event emitter.
+   * @param {new (...listeners: L[]) => A} param0.adapter The adapter class to manage listeners.
    * @param {R} param0.async Whether the emitter listeners operate asynchronously.
-   * @param {T} param0.value The underlying data for the listeners for capture its type only.
-   * @param {?(E | E[])} [events] The initial listeners.
+   * @param {?(L | L[])} [listeners] The initial listeners.
    */
   constructor(
-    {adapter, async, value}: {adapter?: new (...listeners: E[]) => A, async?: R, value?: T},
-    events?: E | E[],
+    {adapter, async}: {adapter?: new (...listeners: L[]) => A, async?: R},
+    listeners?: L | L[],
   ) {
-    super({async, value}, adapter ?? ListenersSetAdapter as any, events);
+    super(async ?? false as R, adapter ?? ListenersSetAdapter as any, listeners);
   }
 }
